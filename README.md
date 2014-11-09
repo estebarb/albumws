@@ -1,0 +1,4 @@
+albumws
+=======
+
+RESTful album manager
