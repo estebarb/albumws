@@ -1,7 +1,15 @@
-var app = angular.module('discosApp', ['ngResource']);
+// Safari reports success of list attribute, so doing ghetto detection instead
+yepnope({
+    test: (!Modernizr.input.list || (parseInt($.browser.version) > 400)),
+    yep: [
+	'https://raw2.github.com/CSS-Tricks/Relevant-Dropdowns/master/js/jquery.relevant-dropdown.js',
+	'https://raw2.github.com/CSS-Tricks/Relevant-Dropdowns/master/js/load-fallbacks.js'
+    ]
+});
 
-var serviceURL = "//localhost:8080"
 
+var app = angular.module('discosApp', ['ngResource', 'ui.bootstrap']);
+var serviceURL = "//localhost:8080";
 app.factory("discosFactory", function($resource) {
     return $resource(serviceURL + "/ProyectoDiscos/webresources/persistencia.discos/:did",
 	    null,
@@ -11,7 +19,6 @@ app.factory("discosFactory", function($resource) {
 		    url: serviceURL + "/ProyectoDiscos/webresources/persistencia.discos/:did"}
 	    });
 });
-
 app.factory("artistasFactory", function($resource) {
     return $resource(serviceURL + "/ProyectoDiscos/webresources/persistencia.artistas/:aid",
 	    null,
@@ -21,94 +28,76 @@ app.factory("artistasFactory", function($resource) {
 		    url: serviceURL + "/ProyectoDiscos/webresources/persistencia.artistas/:aid"},
 		'search': {method: 'GET',
 		    params: {title: '@title'},
-		    url: serviceURL + "/ProyectoDiscos/webresources/persistencia.artistas/search/:title"}
+		    url: serviceURL + "/ProyectoDiscos/webresources/persistencia.artistas/search/:title",
+		    isArray: true}
 	    });
 });
 
-function AppController($scope, $location, discosFactory) {
+function AppController($scope, $http, discosFactory, artistasFactory) {
 
     function cargarDiscos() {
 	$scope.albumes = discosFactory.query();
     }
 
+    $scope.ListaArtistas = artistasFactory.query();
+
+
+    $scope.ActualizarArtistas = function(arg) {
+	console.log(arg);
+	var artista = arg;
+	arg = artista.nombre;
+	$http.get(serviceURL + '/ProyectoDiscos/webresources/persistencia.artistas/search/' + encodeURI(arg)).
+		success(function(data, status, headers, config) {
+		    $scope.ListaArtistas = data;
+		    data.forEach(function(e, idx, data) {
+			if (e.nombre === arg.nombre) {
+			    $scope.NuevoDisco.artista.nombre = e.nombre;
+			    $scope.NuevoDisco.artista.aid = e.aid;
+			} else {
+			    delete $scope.NuevoDisco.artista.aid;
+			}
+		    });
+		}).
+		error(function(data, status, headers, config) {
+		    console.log(data);
+		});
+    }
+
+
+
     $scope.agregar = function() {
-	discosFactory.save($scope.nuevoDisco, cargarDiscos)
+	discosFactory.save($scope.nuevoDisco, cargarDiscos);
+    };
+    $scope.NuevoDisco = {artista: {nombre: ""}, titulo: "", fecha: ""};
+    $scope.beginNuevo = function() {
+	$scope.NuevoDisco = { artista: {nombre: ""}, titulo: "", fecha: ""};
     };
 
-    $scope.NuevoDisco = {id: 0, artista: {nombre: ""}, titulo: "", fecha: ""};
-    $scope.DiscoModificado = $scope.NuevoDisco;
-
-    $scope.beginNuevo = function() {
-	$scope.NuevoDisco = {id: 0, artista: {nombre: ""}, titulo: "", fecha: ""};
-    }
-
     $scope.agregar = function() {
-	if ($scope.NuevoDisco.artista.nombre === "") {
-	    $scope.NuevoDisco.artista.nombre = $('#newInputArtista').val();
-	}
+	delete $scope.NuevoDisco.did;
 	discosFactory.save($scope.NuevoDisco, cargarDiscos);
-	$scope.NuevoDisco = {id: 0, artista: {nombre: ""}, titulo: "", fecha: ""};
-	$('#newInputArtista').val("");
-	$('#nuevoModal').modal('hide')
-    }
+	$scope.NuevoDisco = {artista: {nombre: ""}, titulo: "", fecha: ""};
+	$('#nuevoModal').modal('hide');
+    };
 
     $scope.modificar = function() {
-	//modificarModal
-	if ($scope.NuevoDisco.artista.nombre === "") {
-	    $scope.DiscoModificado.artista.nombre = $('#modificarArtista').val();
-	}
-	discosFactory.update($scope.DiscoModificado, cargarDiscos);
-	$scope.DiscoModificado = {id: 0, artista: {nombre: ""}, titulo: "", fecha: ""};
-	$('#modificarArtista').val("");
-	$('#modificarModal').modal('hide')
-    }
+	discosFactory.update($scope.NuevoDisco, cargarDiscos);
+	$scope.NuevoDisco = {artista: {nombre: ""}, titulo: "", fecha: ""};
+	$('#modificarModal').modal('hide');
+    };
 
     $scope.editar = function(disco) {
-	$scope.DiscoModificado = disco;
-	console.log(disco);
-	$('#modificarModal').modal('show')
-    }
+	$scope.NuevoDisco.titulo = disco.titulo;
+	$scope.NuevoDisco.artista.nombre = disco.artista.nombre;
+	$scope.NuevoDisco.artista.aid = disco.artista.aid;
+	$scope.NuevoDisco.fecha = disco.fecha;
+	$scope.NuevoDisco.did = disco.did;
+	$('#modificarModal').modal('show');
+    };
 
     $scope.borrar = function(disco) {
 	discosFactory.delete(disco, cargarDiscos);
-    }
+    };
 
     cargarDiscos();
-
-    $('#nuevoDIV .typeahead').typeahead(null, {
-	name: 'newInputArtista',
-	displayKey: 'nombre',
-	source: taAlbumes.ttAdapter()
-    })
-	    .on('typeahead:selected', function(e, data) {
-		$scope.NuevoDisco.artista = data;
-	    });
-    $("#newInputArtista")
-	    .change(function() {
-		delete $scope.NuevoDisco.artista.aid;
-	    });
-
-    $('#modificarDIV .typeahead').typeahead(null, {
-	name: 'modificarArtista',
-	displayKey: 'nombre',
-	source: taAlbumes.ttAdapter()
-    })
-	    .on('typeahead:selected', function(e, data) {
-		$scope.DiscoModificado.artista = data;
-	    });
-
-    $("#modificarArtista")
-	    .change(function() {
-		delete $scope.NuevoDisco.artista.aid;
-	    });
-}
-;
-
-var taAlbumes = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    remote: serviceURL + '/ProyectoDiscos/webresources/persistencia.artistas/search/%QUERY'
-});
-
-taAlbumes.initialize();
-
+};

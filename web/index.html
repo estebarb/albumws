@@ -1,126 +1,64 @@
 <html ng-app="discosApp">
-    <head>
-	<meta charset="utf-8">
-        <title>Proyecto RESTful</title>  
-        <!-- JQuery (requerido por Bootstrap y Angular -->
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<!-- Bootstrap -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
-	<link href="//netdna.bootstrapcdn.com/bootswatch/3.0.2/yeti/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="css/style.css" />
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js" type="text/javascript"></script> 
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-resource.js" type="text/javascript"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/dist/typeahead.bundle.min.js" type="text/javascript"></script>
-    </head>
-    <body ng-controller="AppController">
-	<div class="container">
-	    <h1>Álbumes</h1>
-	    Esteban Rodríguez Betancourt - B15512
+  <head>
+    <meta charset="utf-8">
+    <title>Proyecto RESTful</title>  
+    <!-- JQuery (requerido por Bootstrap y Angular -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
+    <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.2/yeti/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js"></script> 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-resource.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.4.0/ui-bootstrap-tpls.min.js"></script>
+  </head>
+  <body ng-controller="AppController">
+    <div class="container">
+      <h1>Álbumes</h1>
+      Esteban Rodríguez Betancourt - B15512
 
-	    <div class="row">
-		<button ng-click="beginNuevo()" class="btn btn-success" data-toggle="modal" data-target="#nuevoModal">
-		    Nuevo
-		</button>
-		<button ng-click="cargarDiscos()" class="btn btn-info">
-		    Recargar datos
-		</button>
-	    </div>
-
-	    <div class="modal fade" id="nuevoModal" tabindex="-1" role="dialog" aria-labelledby="modalNuevo" aria-hidden="true">
-		<div class="modal-dialog">
-		    <div class="modal-content">
-			<div class="modal-header">
-			    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			    <h4 class="modal-title" id="myModalLabel">Nuevo álbum</h4>
-			</div>
-			<div class="modal-body">
-			    <form>
-				<div class="form-group">
-				    <label for="newInputArtista">Artista</label>
-				    <div id="nuevoDIV">
-					<input type="text" class="form-control typeahead" id="newInputArtista" placeholder="Nombre del artista o grupo" ng-model="NuevoDisco.artista.nombre">
-				    </div>
-				</div>
-				<div class="form-group">
-				    <label for="newInputTitulo">Nombre del álbum</label>
-				    <input type="text" class="form-control" id="newInputTitulo" placeholder="Título del álbum" ng-model="NuevoDisco.titulo">
-				</div>
-				<div class="form-group">
-				    <label for="newInputFecha">Fecha</label>
-				    <input type="date" class="form-control" id="newInputFecha" placeholder="Fecha de publicación" ng-model="NuevoDisco.fecha">
-				</div>
-			    </form>
-			</div>
-			<div class="modal-footer">
-			    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-			    <button type="button" class="btn btn-primary" ng-click="agregar()">Agregar</button>
-			</div>
-		    </div>
-		</div>
-	    </div>
+      <div class="row">
+        <button ng-click="beginNuevo()" class="btn btn-success" data-toggle="modal" data-target="#nuevoModal">
+          Nuevo
+        </button>
+        <button ng-click="cargarDiscos()" class="btn btn-info">
+          Recargar datos
+        </button>
+      </div>
 
 
-	    <div class="modal fade" id="modificarModal" tabindex="-1" role="dialog" aria-labelledby="modalNuevo" aria-hidden="true">
-		<div class="modal-dialog">
-		    <div class="modal-content">
-			<div class="modal-header">
-			    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			    <h4 class="modal-title" id="modificarLabel">Modificar álbum</h4>
-			</div>
-			<div class="modal-body">
-			    <form>
-				<div class="form-group">
-				    <label for="modificarArtista">Artista</label>
-				    <div id="modificarDIV">
-					<input type="text" class="form-control typeahead" id="modificarArtista" placeholder="Nombre del artista o grupo" ng-model="DiscoModificado.artista.nombre">
-				    </div>
-				</div>
-				<div class="form-group">
-				    <label for="modificarTitulo">Nombre del álbum</label>
-				    <input type="text" class="form-control" id="modificarTitulo" placeholder="Título del álbum" ng-model="DiscoModificado.titulo">
-				</div>
-				<div class="form-group">
-				    <label for="modificarFecha">Fecha</label>
-				    <input type="date" class="form-control" id="modificarFecha" placeholder="Fecha de publicación" ng-model="DiscoModificado.fecha">
-				</div>
-			    </form>
-			</div>
-			<div class="modal-footer">
-			    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-			    <button type="button" class="btn btn-primary" ng-click="modificar()">Actualizar</button>
-			</div>
-		    </div>
-		</div>
-	    </div>
+      <div ng-include="'partials/nuevo.html'"></div>
+      <div ng-include="'partials/edit.html'"></div>
 
 
-	    <table class="table table-hover">
-		<thead>                
-		    <tr>
-			<th>ID</th>
-			<th>Autor</th>
-			<th>Nombre</th>
-			<th>Fecha</th>
-			<th></th>
-		    </tr>
-		</thead>
-		<tbody>
-		    <tr ng-repeat="album in albumes">
-			<td>{{album.did}}</td>
-			<td>{{album.artista.nombre}}</td>
-			<td>{{album.titulo}}</td>
-			<td>{{album.fecha| date:'dd/MM/yyyy'}}</td>
-			<td>
-			    <div class="row">
-				<button href="#" ng-click="editar(album)" class="btn btn-warning">Modificar</button>
-				<button href="#" ng-click="borrar(album)" class="btn btn-danger">Borrar</button>
-			    </div>
-			</td>
-		    </tr>
-		</tbody>
-	    </table>
-	</div>
-	<script src="js/discos.js" type="text/javascript"></script> 
-    </body>
+      <table class="table table-hover">
+        <thead>                
+          <tr>
+            <th>ID</th>
+            <th>Autor</th>
+            <th>Nombre</th>
+            <th>Fecha</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="album in albumes">
+            <td>{{album.did}}</td>
+            <td>{{album.artista.nombre}}</td>
+            <td>{{album.titulo}}</td>
+            <td>{{album.fecha| date:'dd/MM/yyyy'}}</td>
+            <td>
+              <div class="row">
+                <button href="#" ng-click="editar(album)" class="btn btn-warning">Modificar</button>
+                <button href="#" ng-click="borrar(album)" class="btn btn-danger">Borrar</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script src="js/discos.js" type="text/javascript"></script> 
+  </body>
 </html>

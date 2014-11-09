@@ -1,0 +1,33 @@
+<div class="modal fade" id="modificarModal" tabindex="-1" role="dialog" aria-labelledby="modificarLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="modificarLabel">Modificar álbum</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="modificarArtista">Artista</label>
+            <input type="text" class="form-control" ng-model="NuevoDisco.artista.nombre" list="artistasModificar" ng-change="ActualizarArtistas(NuevoDisco.artista)">
+            <datalist id="artistasModificar">
+              <option  ng-repeat="artista in ListaArtistas" value="{{artista.nombre}}">
+            </datalist>
+          </div>
+          <div class="form-group">
+            <label for="modificarTitulo">Nombre del álbum</label>
+            <input type="text" class="form-control" id="modificarTitulo" placeholder="Título del álbum" ng-model="NuevoDisco.titulo">
+          </div>
+          <div class="form-group">
+            <label for="modificarFecha">Fecha</label>
+            <input type="date" class="form-control" id="modificarFecha" placeholder="Fecha de publicación" ng-model="NuevoDisco.fecha">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" ng-click="modificar()">Actualizar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -43,12 +43,17 @@ public class DiscosFacadeREST extends AbstractFacade<Discos> {
 	if (entity.getArtista().getAid() == null) {
 	    // Tal vez hay que crear el artista
 	    em.persist(entity.getArtista());
-	    Artistas newArtista = (Artistas) em.createNamedQuery("Artistas.findByNombre")
+	    List<Artistas> lstArtistas = (List<Artistas>) em.createNamedQuery("Artistas.findByNombre")
 		    .setParameter("nombre", entity.getArtista().getNombre())
-		    .getSingleResult();
-	    entity.setArtista(newArtista);
-	    em.persist(entity);
-	    em.flush();
+		    .getResultList();
+	    for (Artistas newArtista : lstArtistas) {
+		if (newArtista.getNombre().equals(entity.getArtista().getNombre())) {
+		    entity.setArtista(newArtista);
+		    em.persist(entity);
+		    em.flush();
+		    break;
+		}
+	    }
 	} else {
 	    super.create(entity);
 	}
