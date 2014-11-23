@@ -7,7 +7,7 @@
     </session-config>
     <login-config>
         <auth-method>FORM</auth-method>
-        <realm-name>file</realm-name>
+        <realm-name>jdbcrealm</realm-name>
         <form-login-config>
             <form-login-page>/login.html</form-login-page>
             <form-error-page>/loginError.html</form-error-page>
