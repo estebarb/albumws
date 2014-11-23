@@ -42,11 +42,16 @@ public class RoleInfo {
     public String getJson() {
 	if (securityContext.getUserPrincipal() != null) {
 	    String username = securityContext.getUserPrincipal().getName();
+	    //UsersFacadeREST u;
+	    //u = new UsersFacadeREST();
+	    //Users uData = u.find(username);
 	    if (securityContext.isUserInRole("Administrador")) {
 		//return new RolDescriptor(username, "administrador");
+		//return "{\"rol\":\"Administrador\",\"username\":\""+username+"\",\"name\":\""+uData.getNombre()+"}";
 		return "{\"rol\":\"Administrador\",\"username\":\""+username+"\"}";
 	    } else if (securityContext.isUserInRole("Usuario")) {
 		//return new RolDescriptor(username, "usuario");
+		//return "{\"rol\":\"Usuario\",\"username\":\""+username+"\",\"name\":\""+uData.getNombre()+"}";
 		return "{\"rol\":\"Usuario\",\"username\":\""+username+"\"}";
 	    } else {
 		//return new RolDescriptor("visita", "visitante");

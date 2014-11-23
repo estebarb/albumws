@@ -9,6 +9,7 @@ yepnope({
 
 
 var app = angular.module('discosApp', ['ngResource', 'ui.bootstrap']);
+
 var serviceURL = "//localhost:8080";
 app.factory("discosFactory", function($resource) {
     return $resource(serviceURL + "/ProyectoDiscos/webresources/persistencia.discos/:did",
@@ -49,11 +50,11 @@ function AppController($scope, $http, discosFactory, artistasFactory, rolesFacto
     }
 
     $scope.ListaArtistas = artistasFactory.query();
-    
-    
-    
+
+
+
     $scope.ROL = rolesFactory.get();
-    $scope.Logout = function(){
+    $scope.Logout = function() {
 	rolesFactory.logout();
 	$scope.ROL = rolesFactory.get();
     };
@@ -86,7 +87,7 @@ function AppController($scope, $http, discosFactory, artistasFactory, rolesFacto
     };
     $scope.NuevoDisco = {artista: {nombre: ""}, titulo: "", fecha: ""};
     $scope.beginNuevo = function() {
-	$scope.NuevoDisco = { artista: {nombre: ""}, titulo: "", fecha: ""};
+	$scope.NuevoDisco = {artista: {nombre: ""}, titulo: "", fecha: ""};
     };
 
     $scope.agregar = function() {
@@ -116,4 +117,5 @@ function AppController($scope, $http, discosFactory, artistasFactory, rolesFacto
     };
 
     cargarDiscos();
-};
+}
+;

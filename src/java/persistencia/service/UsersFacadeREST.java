@@ -1,12 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package persistencia.service;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.logging.*;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,6 +26,7 @@ import persistencia.Users;
  */
 @Stateless
 @Path("persistencia.users")
+@RolesAllowed("Administrador")
 public class UsersFacadeREST extends AbstractFacade<Users> {
     @PersistenceContext(unitName = "ProyectoDiscosPU")
     private EntityManager em;
@@ -36,16 +37,35 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
 
     @POST
     @Override
-    @Consumes({"application/xml", "application/json"})
+    @Consumes({"application/json"})
     public void create(Users entity) {
+	entity.setPassword(HashPassword(entity.getPassword()));
 	super.create(entity);
     }
 
     @PUT
     @Path("{id}")
-    @Consumes({"application/xml", "application/json"})
+    @Consumes({"application/json"})
     public void edit(@PathParam("id") String id, Users entity) {
+	entity.setPassword(HashPassword(entity.getPassword()));
 	super.edit(entity);
+    }
+    
+    private String HashPassword(String password){
+	try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            String text = "admin";
+            md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
+            byte[] digest = md.digest();
+            BigInteger bigInt = new BigInteger(1, digest);
+            String output = bigInt.toString(16);
+
+            return output;
+
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "No hay algoritmo", ex);
+	    return "";
+        }
     }
 
     @DELETE
@@ -56,21 +76,21 @@ public class UsersFacadeREST extends AbstractFacade<Users> {
 
     @GET
     @Path("{id}")
-    @Produces({"application/xml", "application/json"})
+    @Produces({"application/json"})
     public Users find(@PathParam("id") String id) {
 	return super.find(id);
     }
 
     @GET
     @Override
-    @Produces({"application/xml", "application/json"})
+    @Produces({"application/json"})
     public List<Users> findAll() {
 	return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
-    @Produces({"application/xml", "application/json"})
+    @Produces({"application/json"})
     public List<Users> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
 	return super.findRange(new int[]{from, to});
     }

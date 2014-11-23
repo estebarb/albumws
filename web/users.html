@@ -25,14 +25,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Administrador de álbumes</a>
+          <a class="navbar-brand" href=".">Administrador de álbumes</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
-            <li ng-show="ROL.rol === 'Administrador'"><a href="users.html">Gestión de usuarios</a></li>
-          </ul>
           <ul class="nav navbar-nav navbar-right">
             <li ng-hide="ROL.rol === 'visitante'"><p class="navbar-text">Logueado como {{ROL.username}} ({{ROL.rol}})</p></li>
             <li ng-show="ROL.rol === 'visitante'"><a data-toggle="modal" data-target="#loginModal">Iniciar sesión</a></li>
@@ -41,12 +38,15 @@
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>
-    <div class="container">
-      <h1>Álbumes</h1>
-      <p>Esteban Rodríguez Betancourt - B15512</p>
+    <div class="container" ng-hide="ROL.rol === 'Administrador'">
+      <h1>Gestión de usuarios</h1>
+      <p>Por favor, inicie sesión como administrador para poder gestionar los usuarios.</p>
+    </div>
+    <div class="container" ng-show="ROL.rol === 'Administrador'">
+      <h1>Gestión de usuarios</h1>
 
       <div class="row">
-        <button ng-hide="ROL.rol === 'visitante'" ng-click="beginNuevo()" class="btn btn-success" data-toggle="modal" data-target="#nuevoModal">
+        <button ng-click="beginNuevo()" class="btn btn-success" data-toggle="modal" data-target="#nuevoModal">
           Nuevo
         </button>
         <button ng-click="cargarDiscos()" class="btn btn-info">
@@ -55,31 +55,28 @@
       </div>
 
 
-      <div ng-include="'partials/nuevo.html'"></div>
-      <div ng-include="'partials/edit.html'"></div>
-      <div ng-include="'partials/login.html'"></div>
+      <div ng-include="'partials/newUser.html'"></div>
+      <div ng-include="'partials/editUser.html'"></div>
 
 
       <table class="table table-hover">
         <thead>                
           <tr>
-            <th>ID</th>
-            <th>Autor</th>
+            <th>Username</th>
             <th>Nombre</th>
-            <th>Fecha</th>
+            <th>Rol</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="album in albumes">
-            <td>{{album.did}}</td>
-            <td>{{album.artista.nombre}}</td>
-            <td>{{album.titulo}}</td>
-            <td>{{album.fecha| date:'dd/MM/yyyy'}}</td>
+          <tr ng-repeat="user in usuarios">
+            <td>{{user.userid}}</td>
+            <td>{{user.nombre}}</td>
+            <td>{{user.groupid}}</td>
             <td>
-              <div class="row">
-                <button ng-hide="ROL.rol === 'visitante'" href="#" ng-click="editar(album)" class="btn btn-warning">Modificar</button>
-                <button ng-hide="ROL.rol === 'visitante'" href="#" ng-click="borrar(album)" class="btn btn-danger">Borrar</button>
+              <div class="row" ng-show="ROL.rol === 'Administrador'" >
+                <button href="#" ng-click="editar(user)" class="btn btn-warning btn-xs">Modificar</button>
+                <button href="#" ng-click="borrar(user)" class="btn btn-danger btn-xs">Borrar</button>
               </div>
             </td>
           </tr>
@@ -87,6 +84,6 @@
       </table>
 
     </div>
-    <script src="js/discos.js" type="text/javascript"></script> 
+    <script src="js/user.js" type="text/javascript"></script> 
   </body>
 </html>
