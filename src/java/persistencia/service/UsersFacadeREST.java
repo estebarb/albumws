@@ -18,60 +18,60 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import persistencia.Usuarios;
+import persistencia.Users;
 
 /**
  *
  * @author esteban
  */
 @Stateless
-@Path("persistencia.usuarios")
-public class UsuariosFacadeREST extends AbstractFacade<Usuarios> {
+@Path("persistencia.users")
+public class UsersFacadeREST extends AbstractFacade<Users> {
     @PersistenceContext(unitName = "ProyectoDiscosPU")
     private EntityManager em;
 
-    public UsuariosFacadeREST() {
-	super(Usuarios.class);
+    public UsersFacadeREST() {
+	super(Users.class);
     }
 
     @POST
     @Override
-    @Consumes({"application/json"})
-    public void create(Usuarios entity) {
+    @Consumes({"application/xml", "application/json"})
+    public void create(Users entity) {
 	super.create(entity);
     }
 
     @PUT
     @Path("{id}")
-    @Consumes({"application/json"})
-    public void edit(@PathParam("id") Integer id, Usuarios entity) {
+    @Consumes({"application/xml", "application/json"})
+    public void edit(@PathParam("id") String id, Users entity) {
 	super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
+    public void remove(@PathParam("id") String id) {
 	super.remove(super.find(id));
     }
 
     @GET
     @Path("{id}")
-    @Produces({"application/json"})
-    public Usuarios find(@PathParam("id") Integer id) {
+    @Produces({"application/xml", "application/json"})
+    public Users find(@PathParam("id") String id) {
 	return super.find(id);
     }
 
     @GET
     @Override
-    @Produces({"application/json"})
-    public List<Usuarios> findAll() {
+    @Produces({"application/xml", "application/json"})
+    public List<Users> findAll() {
 	return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
-    @Produces({"application/json"})
-    public List<Usuarios> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    @Produces({"application/xml", "application/json"})
+    public List<Users> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
 	return super.findRange(new int[]{from, to});
     }
 

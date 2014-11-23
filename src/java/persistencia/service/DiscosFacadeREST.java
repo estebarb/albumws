@@ -6,6 +6,8 @@
 package persistencia.service;
 
 import java.util.List;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,6 +28,7 @@ import persistencia.Artistas;
  */
 @Stateless
 @Path("persistencia.discos")
+@PermitAll
 public class DiscosFacadeREST extends AbstractFacade<Discos> {
 
     @PersistenceContext(unitName = "ProyectoDiscosPU")
@@ -36,9 +39,10 @@ public class DiscosFacadeREST extends AbstractFacade<Discos> {
     }
 
     @POST
-    @Override
     @Consumes({"application/json"})
-    public void create(Discos entity) {
+    @RolesAllowed({"Usuario","Administrador"})
+    public void create(Discos entity/*, @HeaderParam("username") String username*/) {
+	//System.out.println("---->"+username);
 	//System.out.println(entity.toString());
 	if (entity.getArtista().getAid() == null) {
 	    // Tal vez hay que crear el artista
@@ -62,6 +66,7 @@ public class DiscosFacadeREST extends AbstractFacade<Discos> {
     @PUT
     @Path("{id}")
     @Consumes({"application/json"})
+    @RolesAllowed({"Usuario","Administrador"})
     public void edit(@PathParam("id") Integer id, Discos entity) {
 	if (entity.getArtista().getAid() == null) {
 	    // Tal vez hay que crear el artista
@@ -77,6 +82,7 @@ public class DiscosFacadeREST extends AbstractFacade<Discos> {
 
     @DELETE
     @Path("{id}")
+    @RolesAllowed({"Usuario","Administrador"})
     public void remove(@PathParam("id") Integer id) {
 	super.remove(super.find(id));
     }

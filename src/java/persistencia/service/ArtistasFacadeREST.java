@@ -7,6 +7,7 @@
 package persistencia.service;
 
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -38,6 +39,7 @@ public class ArtistasFacadeREST extends AbstractFacade<Artistas> {
     @POST
     @Override
     @Consumes({"application/json"})
+    @RolesAllowed({"Usuario","Administrador"})
     public void create(Artistas entity) {
 	super.create(entity);
     }
@@ -45,12 +47,14 @@ public class ArtistasFacadeREST extends AbstractFacade<Artistas> {
     @PUT
     @Path("{id}")
     @Consumes({"application/json"})
+    @RolesAllowed({"Usuario","Administrador"})
     public void edit(@PathParam("id") Integer id, Artistas entity) {
 	super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
+    @RolesAllowed({"Usuario","Administrador"})
     public void remove(@PathParam("id") Integer id) {
 	super.remove(super.find(id));
     }

@@ -32,7 +32,8 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
 	resources.add(persistencia.service.ArtistasFacadeREST.class);
 	resources.add(persistencia.service.DiscosFacadeREST.class);
-	resources.add(persistencia.service.UsuariosFacadeREST.class);
+	resources.add(persistencia.service.RoleInfo.class);
+	resources.add(persistencia.service.UsersFacadeREST.class);
     }
     
 }

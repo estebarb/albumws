@@ -14,13 +14,36 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-resource.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.4.0/ui-bootstrap-tpls.min.js"></script>
   </head>
-  <body ng-controller="AppController">
+  <body ng-controller="AppController" style="padding-top: 70px;">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Administrador de álbumes</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li ng-hide="ROL.rol === 'visitante'"><p class="navbar-text">Logueado como {{ROL.username}} ({{ROL.rol}})</p></li>
+            <li ng-show="ROL.rol === 'visitante'"><a data-toggle="modal" data-target="#loginModal">Iniciar sesión</a></li>
+            <li ng-hide="ROL.rol === 'visitante'"><a ng-click="Logout()">Cerrar sesión</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
     <div class="container">
       <h1>Álbumes</h1>
-      Esteban Rodríguez Betancourt - B15512
+      <p>Esteban Rodríguez Betancourt - B15512</p>
 
       <div class="row">
-        <button ng-click="beginNuevo()" class="btn btn-success" data-toggle="modal" data-target="#nuevoModal">
+        <button ng-hide="ROL.rol === 'visitante'" ng-click="beginNuevo()" class="btn btn-success" data-toggle="modal" data-target="#nuevoModal">
           Nuevo
         </button>
         <button ng-click="cargarDiscos()" class="btn btn-info">
@@ -31,6 +54,7 @@
 
       <div ng-include="'partials/nuevo.html'"></div>
       <div ng-include="'partials/edit.html'"></div>
+      <div ng-include="'partials/login.html'"></div>
 
 
       <table class="table table-hover">
@@ -48,11 +72,11 @@
             <td>{{album.did}}</td>
             <td>{{album.artista.nombre}}</td>
             <td>{{album.titulo}}</td>
-            <td>{{album.fecha| date:'dd/MM/yyyy'}}</td>
+            <td>{{album.fecha | date:'dd/MM/yyyy'}}</td>
             <td>
               <div class="row">
-                <button href="#" ng-click="editar(album)" class="btn btn-warning">Modificar</button>
-                <button href="#" ng-click="borrar(album)" class="btn btn-danger">Borrar</button>
+                <button ng-hide="ROL.rol === 'visitante'" href="#" ng-click="editar(album)" class="btn btn-warning">Modificar</button>
+                <button ng-hide="ROL.rol === 'visitante'" href="#" ng-click="borrar(album)" class="btn btn-danger">Borrar</button>
               </div>
             </td>
           </tr>

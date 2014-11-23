@@ -33,14 +33,30 @@ app.factory("artistasFactory", function($resource) {
 	    });
 });
 
-function AppController($scope, $http, discosFactory, artistasFactory) {
+app.factory("rolesFactory", function($resource) {
+    return $resource(serviceURL + "/ProyectoDiscos/webresources/roles/:aid",
+	    null,
+	    {
+		'logout': {method: 'POST',
+		    url: serviceURL + "/ProyectoDiscos/logout"}
+	    });
+});
+
+function AppController($scope, $http, discosFactory, artistasFactory, rolesFactory) {
 
     function cargarDiscos() {
 	$scope.albumes = discosFactory.query();
     }
 
     $scope.ListaArtistas = artistasFactory.query();
-
+    
+    
+    
+    $scope.ROL = rolesFactory.get();
+    $scope.Logout = function(){
+	rolesFactory.logout();
+	$scope.ROL = rolesFactory.get();
+    };
 
     $scope.ActualizarArtistas = function(arg) {
 	console.log(arg);
